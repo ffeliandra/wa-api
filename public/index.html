@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scan QR WhatsApp</title>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body style="text-align: center; font-family: Arial;">
+  <h1>📲 Scan QR untuk Login WhatsApp</h1>
+  <div id="qrContainer">
+    <p>Menunggu QR...</p>
+  </div>
+  <br />
+  <button onclick="logout()">🔌 Logout</button>
+
+  <script>
+    const socket = io({
+      path: '/api-wa/socket.io'
+    });
+  
+    socket.on('connect', () => {
+      console.log("🔗 Socket terhubung");
+    });
+  
+    socket.on('qr', (qrDataUrl) => {
+      console.log("🆗 Menerima QR");
+      document.getElementById('qrContainer').innerHTML = `
+        <img src="${qrDataUrl}" alt="QR Code" width="300" />
+      `;
+    });
+  
+    socket.on('logged-out', () => {
+      alert('✅ Logout berhasil');
+      location.reload();
+    });
+  
+    function logout() {
+      socket.emit('logout');
+    }
+  </script>
+  
+  
+</body>
+</html>
